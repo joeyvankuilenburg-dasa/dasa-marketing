@@ -19,7 +19,7 @@ session = client.beta.sessions.create(
 
 print(f"Session created: {session.id}")
 
-# Send the trigger message — pass GITHUB_TOKEN so agent can push state.json
+# Send the trigger message
 client.beta.sessions.events.send(
     session_id=session.id,
     events=[{
@@ -29,19 +29,34 @@ client.beta.sessions.events.send(
     betas=["managed-agents-2026-04-01"],
 )
 
-# Stream the output
-with client.beta.sessions.events.stream(
-    session_id=session.id,
-    betas=["managed-agents-2026-04-01"],
-) as stream:
-    for event in stream:
-        if hasattr(event, 'type'):
-            if event.type == 'agent.message':
-                for block in event.content:
-                    if hasattr(block, 'text'):
-                        print(block.text)
-            elif event.type == 'session.status_terminated':
-                break
-            elif event.type == 'session.error':
-                print(f"Error: {event}")
-                break
+print("Message sent, waiting for response...")
+
+# Poll for events instead of streaming
+import time
+last_id = None
+deadline = time.time() + 300  # 5 minute timeout
+
+while time.time() < deadline:
+    events = client.beta.sessions.events.list(
+        session_id=session.id,
+        after_id=last_id,
+        betas=["managed-agents-2026-04-01"],
+    )
+    
+    for event in events.data:
+        last_id = event.id
+        print(f"Event: {event.type}")
+        if event.type == 'agent.message':
+            for block in event.content:
+                if hasattr(block, 'text'):
+                    print(block.text)
+        elif event.type == 'session.status_terminated':
+            print("Session terminated.")
+            exit(0)
+        elif event.type == 'session.error':
+            print(f"Session error: {event}")
+            exit(1)
+    
+    time.sleep(5)
+
+print("Timeout reached.")
