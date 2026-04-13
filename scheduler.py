@@ -31,32 +31,25 @@ client.beta.sessions.events.send(
 
 print("Message sent, waiting for response...")
 
-# Poll for events instead of streaming
-import time
-last_id = None
-deadline = time.time() + 300  # 5 minute timeout
-
-while time.time() < deadline:
-    events = client.beta.sessions.events.list(
-        session_id=session.id,
-        after_id=last_id,
-        betas=["managed-agents-2026-04-01"],
-    )
-    
-    for event in events.data:
-        last_id = event.id
+# Stream events via SSE
+with client.beta.sessions.events.stream(
+    session_id=session.id,
+    betas=["managed-agents-2026-04-01"],
+) as stream:
+    for event in stream:
         print(f"Event: {event.type}")
-        if event.type == 'agent.message':
+        if event.type == "agent.message":
             for block in event.content:
-                if hasattr(block, 'text'):
+                if hasattr(block, "text"):
                     print(block.text)
-        elif event.type == 'session.status_terminated':
+        elif event.type == "session.status_idle":
+            print("Session idle — agent finished.")
+            break
+        elif event.type == "session.status_terminated":
             print("Session terminated.")
-            exit(0)
-        elif event.type == 'session.error':
+            break
+        elif event.type == "session.error":
             print(f"Session error: {event}")
-            exit(1)
-    
-    time.sleep(5)
+            raise SystemExit(1)
 
-print("Timeout reached.")
+print("Done.")
