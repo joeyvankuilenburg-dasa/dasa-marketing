@@ -1,4 +1,4 @@
-]import os
+import os
 import anthropic
 
 client = anthropic.Anthropic(api_key=os.environ["ANTHROPIC_API_KEY"])
@@ -19,12 +19,12 @@ session = client.beta.sessions.create(
 
 print(f"Session created: {session.id}")
 
-# Send the trigger message
+# Send the trigger message — pass GITHUB_TOKEN so agent can push state.json
 client.beta.sessions.events.send(
     session_id=session.id,
     events=[{
         "type": "user.message",
-        "content": [{"type": "text", "text": "Check the current time and publish the next scheduled post if we are within a posting window."}]
+        "content": [{"type": "text", "text": f"GITHUB_TOKEN={os.environ['GITHUB_TOKEN']}\n\nCheck the current time and publish the next scheduled post if we are within a posting window."}]
     }],
     betas=["managed-agents-2026-04-01"],
 )
