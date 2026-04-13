@@ -1,12 +1,12 @@
-import os
+]import os
 import anthropic
 
 client = anthropic.Anthropic(api_key=os.environ["ANTHROPIC_API_KEY"])
 
 # Create a session
 session = client.beta.sessions.create(
-    agent="your_agent_id",
-    environment_id="your_environment_id",
+    agent="agent_011CZsidNP8yM3LsnPSfx9wV",
+    environment_id="env_01YaA6CpUPdzdqrHzVj3QYLS",
     resources=[{
         "type": "github_repository",
         "url": "https://github.com/joeyvankuilenburg-dasa/dasa-marketing",
