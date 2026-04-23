@@ -1,4 +1,11 @@
-# DASA DevOps Coach - Blog Post Social: Security as an Enabler of DevOps
+---
+certification: "DASA DevOps Coach"
+type: blog-post-social
+category: blog-promotion
+title: "Security as an Enabler of DevOps: Balancing Speed and Risk"
+blog_url: "https://www.dasa.org/blog/security-as-an-enabler-of-devops-balancing-speed-risk/"
+visual: ""
+---
 
 Speed without security creates risk. Security without speed creates bottlenecks. The strongest DevOps teams know how to achieve both.
 
