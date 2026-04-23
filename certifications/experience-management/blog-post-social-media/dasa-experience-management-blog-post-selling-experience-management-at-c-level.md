@@ -1,4 +1,11 @@
-# DASA Experience Management - Blog Post Social: Selling Experience Management at C-Level
+---
+certification: "DASA Experience Management"
+type: blog-post-social
+category: blog-promotion
+title: "Selling Experience Management at C-Level"
+blog_url: "https://www.dasa.org/blog/selling-experience-management-at-c-level/"
+visual: ""
+---
 
 Great ideas don't always get approved. Especially at the executive level, value needs to be clear, strategic, and measurable.
 
