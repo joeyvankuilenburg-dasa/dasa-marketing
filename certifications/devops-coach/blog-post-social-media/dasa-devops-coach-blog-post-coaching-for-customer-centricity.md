@@ -1,4 +1,11 @@
-# DASA DevOps Coach - Blog Post Social: Coaching for Customer-Centricity
+---
+certification: "DASA DevOps Coach"
+type: blog-post-social
+category: blog-promotion
+title: "Coaching for Customer-Centricity: Innovate and Simplify with DevOps"
+blog_url: "https://www.dasa.org/blog/coaching-for-customer-centricity-innovate-and-simplify-with-devops/"
+visual: ""
+---
 
 Most organizations say they are customer-centric. Far fewer know how to build that mindset into the way teams actually work.
 
