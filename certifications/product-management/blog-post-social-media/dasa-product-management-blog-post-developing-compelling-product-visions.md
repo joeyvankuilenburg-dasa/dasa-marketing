@@ -1,4 +1,11 @@
-# DASA Product Management - Blog Post Social: Developing Compelling Product Visions
+---
+certification: "DASA Product Management"
+type: blog-post-social
+category: blog-promotion
+title: "Developing Compelling Product Visions: Guide Your Team Towards Success"
+blog_url: "https://www.dasa.org/blog/developing-compelling-product-visions-guide-your-team-towards-success/"
+visual: ""
+---
 
 A product without a clear vision often turns into a roadmap full of features instead of a solution that truly delivers impact.
 
