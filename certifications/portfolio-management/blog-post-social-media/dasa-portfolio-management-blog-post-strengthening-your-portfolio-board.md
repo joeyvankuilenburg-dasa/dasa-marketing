@@ -1,4 +1,11 @@
-# DASA Portfolio Management - Blog Post Social: Strengthening Your Portfolio Board
+---
+certification: "DASA Portfolio Management"
+type: blog-post-social
+category: blog-promotion
+title: "Strengthening Your Portfolio Board: Best Practices for Desired Behavior"
+blog_url: "https://www.dasa.org/blog/strengthening-your-portfolio-board-best-practices-for-desired-behavior/"
+visual: ""
+---
 
 Why do some portfolio boards drive progress while others create friction?
 
