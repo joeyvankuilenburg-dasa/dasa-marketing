@@ -1,0 +1,39 @@
+name: Send pending post to Zapier
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'pending-post.json'
+
+jobs:
+  send-to-zapier:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Send payload to Zapier
+        id: zapier
+        run: |
+          PAYLOAD=$(cat pending-post.json)
+          RESPONSE=$(curl -s -o /tmp/response.txt -w "%{http_code}" \
+            -X POST "${{ secrets.ZAPIER_WEBHOOK_URL }}" \
+            -H "Content-Type: application/json" \
+            -d "$PAYLOAD")
+          echo "status=$RESPONSE" >> $GITHUB_OUTPUT
+          echo "Response body: $(cat /tmp/response.txt)"
+          if [ "$RESPONSE" -lt 200 ] || [ "$RESPONSE" -gt 299 ]; then
+            echo "Zapier webhook failed with status $RESPONSE"
+            exit 1
+          fi
+
+      - name: Delete pending-post.json
+        if: success()
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git rm pending-post.json
+          git commit -m "Scheduler: sent pending post to Zapier"
+          git push
