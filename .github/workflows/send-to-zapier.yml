@@ -20,7 +20,18 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Check pending-post.json exists and was added not deleted
+        id: check
+        run: |
+          if [ ! -f pending-post.json ]; then
+            echo "pending-post.json not found, skipping"
+            echo "should_post=false" >> $GITHUB_OUTPUT
+          else
+            echo "should_post=true" >> $GITHUB_OUTPUT
+          fi
+
       - name: Send payload to Zapier
+        if: steps.check.outputs.should_post == 'true'
         id: zapier
         run: |
           PAYLOAD=$(cat pending-post.json)
@@ -28,7 +39,6 @@ jobs:
             -X POST "${{ secrets.ZAPIER_WEBHOOK_URL }}" \
             -H "Content-Type: application/json" \
             -d "$PAYLOAD")
-          echo "status=$RESPONSE" >> $GITHUB_OUTPUT
           echo "Response body: $(cat /tmp/response.txt)"
           if [ "$RESPONSE" -lt 200 ] || [ "$RESPONSE" -gt 299 ]; then
             echo "Zapier webhook failed with status $RESPONSE"
@@ -36,7 +46,7 @@ jobs:
           fi
 
       - name: Delete pending-post.json
-        if: success()
+        if: steps.check.outputs.should_post == 'true'
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
