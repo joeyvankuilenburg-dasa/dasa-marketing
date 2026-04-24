@@ -13,6 +13,7 @@ permissions:
 jobs:
   send-to-zapier:
     runs-on: ubuntu-latest
+    if: github.event.head_commit.message != 'Scheduler: sent pending post to Zapier'
     steps:
       - name: Checkout
         uses: actions/checkout@v4
