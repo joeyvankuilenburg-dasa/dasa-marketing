@@ -7,8 +7,7 @@ This file supplements the agent system prompt. Follow these steps **before** any
 ## Step 0 — Pull and pre-flight checks (MUST be first)
 
 1. `git fetch origin main && git checkout main && git pull --rebase origin main`
-2. If `pending-post.json` exists in the repo root: **skip this run** (the previous post has not been consumed by Zapier yet). Append to `skipped.log` and commit with message `Scheduler: skipped - pending post not yet consumed`, then push and exit.
-3. Read `scheduler.lock` if it exists:
+2. Read `scheduler.lock` if it exists:
    - Parse `expires_at` (ISO 8601 UTC).
    - If `expires_at` is in the future: **skip this run** — reason `"lock held by another agent"`.
    - If `expires_at` is in the past: the lock is stale; proceed and overwrite it.
@@ -46,6 +45,41 @@ git push -u origin main
 
 Follow the system prompt PUBLISHING and LOGGING steps normally.
 
+### pending-post.json payload — add post_id
+
+Zapier uses `post_id` for native deduplication (it tracks which IDs it has already processed and will not re-trigger for the same ID). Always include this field in `pending-post.json`:
+
+```json
+{
+  "post_id": "<cert>/<type>/<filename>:<ISO 8601 UTC timestamp>",
+  ...
+}
+```
+
+Full payload for b2b and b2c:
+```json
+{
+  "post_id": "<cert>/<type>/<filename>:<ISO 8601 UTC timestamp>",
+  "text": "<post body + two newlines + utm_link>",
+  "image_url": "<raw GitHub image URL>",
+  "image_filename": "<image filename>",
+  "link": "<utm_link>"
+}
+```
+
+Full payload for blog:
+```json
+{
+  "post_id": "<cert>/<type>/<filename>:<ISO 8601 UTC timestamp>",
+  "text": "<post body + two newlines + utm_link>",
+  "image_url": null,
+  "image_filename": null,
+  "link": "<utm_link>"
+}
+```
+
+`pending-post.json` is always overwritten each run. Zapier never needs to delete it or write anything to GitHub.
+
 ## Step 4 — Release lock (final commit)
 
 When making the final commit (posted.json + skipped.log + pending-post.json), also delete the lock:
@@ -65,3 +99,5 @@ Commit message formats remain:
 ## Why this works
 
 Git push is atomic at the remote. Only one agent can successfully push the lock commit; any concurrent agent gets a rejection and skips. The 10-minute TTL ensures a crashed agent never blocks future runs indefinitely.
+
+Zapier deduplicates on `post_id`, so even if it polls `pending-post.json` multiple times between agent runs it will only post to LinkedIn once per unique ID. Zapier writes nothing to GitHub.
