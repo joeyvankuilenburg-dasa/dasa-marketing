@@ -13,14 +13,13 @@ permissions:
 jobs:
   send-to-zapier:
     runs-on: ubuntu-latest
-    if: github.event.head_commit.message != 'Scheduler: sent pending post to Zapier'
     steps:
       - name: Checkout
         uses: actions/checkout@v4
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Check pending-post.json exists and was added not deleted
+      - name: Check if pending-post.json exists
         id: check
         run: |
           if [ ! -f pending-post.json ]; then
@@ -32,14 +31,13 @@ jobs:
 
       - name: Send payload to Zapier
         if: steps.check.outputs.should_post == 'true'
-        id: zapier
         run: |
           PAYLOAD=$(cat pending-post.json)
           RESPONSE=$(curl -s -o /tmp/response.txt -w "%{http_code}" \
             -X POST "${{ secrets.ZAPIER_WEBHOOK_URL }}" \
             -H "Content-Type: application/json" \
             -d "$PAYLOAD")
-          echo "Response body: $(cat /tmp/response.txt)"
+          echo "Response: $(cat /tmp/response.txt)"
           if [ "$RESPONSE" -lt 200 ] || [ "$RESPONSE" -gt 299 ]; then
             echo "Zapier webhook failed with status $RESPONSE"
             exit 1
