@@ -79,4 +79,13 @@
     "visual_filename": "dasa-devops-fundamentals-social-media-b2c-visual.png",
     "link": "https://www.dasa.org/products/talent-products/certification-programs/dasa-devops-fundamentals/?utm_source=linkedin&utm_medium=social&utm_campaign=Self_Paced_Launch&utm_content=DASA_DevOps_Fundamentals"
   }
+  ,
+  {
+    "timestamp": "2026-05-11T07:13:14Z",
+    "certification": "devaiops",
+    "type": "b2b",
+    "filename": "04-skill-gaps-in-ai-ml-and-automation.md",
+    "visual_filename": "dasa-devaiops-social-media-b2b-visual.png",
+    "link": "https://www.dasa.org/products/talent-products/certification-programs/dasa-devalops/"
+  }
 ]
